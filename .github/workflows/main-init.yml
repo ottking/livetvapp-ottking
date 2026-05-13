@@ -1,0 +1,34 @@
+name: Initialize Flutter Project
+
+on:
+  workflow_dispatch: # এটি আপনি গিটহাবের Actions ট্যাব থেকে ম্যানুয়ালি রান করবেন
+
+jobs:
+  create-project:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # গিটহাবে পুশ করার পারমিশন
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Create New Flutter Project
+        run: |
+          # বর্তমান ডিরেক্টরিতে সব ফাইল ডিলিট করে নতুন প্রোজেক্ট তৈরি করবে
+          # 'ottking_app' এর জায়গায় আপনার পছন্দের নাম দিতে পারেন
+          rm -rf *
+          flutter create --project-name=ottking_app --org com.ottking .
+          
+      - name: Config Git and Push
+        run: |
+          git config --global user.name "github-actions[anirban]"
+          git config --global user.email "github-actions[anirban]@users.noreply.github.com"
+          git add .
+          git commit -m "Initialize default Flutter project via GitHub Actions"
+          git push origin main # আপনার ব্রাঞ্চের নাম 'main' না হলে পরিবর্তন করুন
